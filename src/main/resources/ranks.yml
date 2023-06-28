@@ -1,0 +1,7 @@
+default:
+  prefix: §7
+  suffix: §6*
+  team: a
+  permissions:
+    - utilities.discord,true
+primary: default

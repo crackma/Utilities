@@ -1,0 +1,56 @@
+name: Utilities
+version: '${project.version}'
+main: me.crackma.utilities.UtilitiesPlugin
+api-version: 1.19
+commands:
+  discord:
+    description: Sends the discord link.
+    permission: utilities.discord
+    permission-message: §cYou cannot do that.
+    usage: §c/discord
+  info:
+    description: Gives information about a player.
+    permission: utilities.info
+    permission-message: §cYou cannot do that.
+    usage: §c/info <player>
+  rules:
+    description: View the rules.
+    usage: §c/rules
+    permission: utilities.rules
+    permission-message: §cYou cannot do that.
+  spawn:
+    description: Teleport to the world spawn.
+    permission: utilities.spawn
+    permission-message: §cYou cannot do that.
+    usage: §c/spawn [player]
+  test:
+    description: test
+    permission: utilities.test
+    permission-message: §cYou cannot do that.
+    usage: §c/test
+  ban:
+    description: Ban rule breakers.
+    permission: utilities.ban
+    permission-message: §cYou cannot do that.
+    usage: §c/<command> <player> <time> <reason>
+  unban:
+    description: Revoke bans.
+    permission: utilities.ban
+    permission-message: §cYou cannot do that.
+    usage: §c/<command>
+  mute:
+    description: Mute rule breakers.
+    permission: utilities.mute
+    permission-message: §cYou cannot do that.
+    usage: §c/<command> <player> <time> <reason>
+  unmute:
+    description: Revoke mutes.
+    permission: utilities.mute
+    permission-message: §cYou cannot do that.
+    usage: §c/<command>
+  rank:
+    description: Manage permissions.
+    usage: §c/rank help
+    permission: utilities.rank
+    permission-message: §cYou cannot do that.
+
