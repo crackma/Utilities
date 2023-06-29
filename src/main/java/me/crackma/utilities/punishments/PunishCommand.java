@@ -25,11 +25,12 @@ public class PunishCommand implements CommandExecutor {
     }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) return false;
         if (args.length < 3) return false;
         OfflinePlayer receiver = Bukkit.getOfflinePlayer(args[0]);
         User receiverUser = plugin.getUserManager().get(receiver.getUniqueId());
-        if (receiverUser == null) return false;
+        if (receiverUser == null) {
+            return false;
+        }
         String end = String.valueOf(args[1].charAt(args[1].length() - 1));
         long duration;
         try {//parse number of args[1]
@@ -48,10 +49,10 @@ public class PunishCommand implements CommandExecutor {
                 duration = Duration.of(duration, ChronoUnit.DAYS).toMillis();
                 break;
             case "m":
-                duration = Duration.of(duration, ChronoUnit.MONTHS).toMillis();
+                    duration = Duration.of(duration, ChronoUnit.DAYS).toMillis() * 30;
                 break;
             case "y":
-                duration = Duration.of(duration, ChronoUnit.YEARS).toMillis();
+                duration = Duration.of(duration, ChronoUnit.DAYS).toMillis() * 365;
                 break;
             default:
                 return false;
@@ -59,19 +60,33 @@ public class PunishCommand implements CommandExecutor {
         PunishmentType punishmentType;
         if (label.equalsIgnoreCase("ban")) {
             punishmentType = PunishmentType.BAN;
+            if (receiverUser.findActiveBan() == null) {
+                sender.sendMessage("§c" + receiver.getName() + " is already banned.");
+                return true;
+            }
         } else {
             punishmentType = PunishmentType.MUTE;
+            if (receiverUser.findActiveMute() != null) {
+                sender.sendMessage("§c" + receiver.getName() + " is already muted.");
+                return true;
+            }
         }
-        Player issuer = (Player) sender;
-        User issuerUser = plugin.getUserManager().get(issuer.getUniqueId());
+        TextComponent issuerName;
+        if (sender instanceof Player) {
+            Player issuer = (Player) sender;
+            User issuerUser = plugin.getUserManager().get(issuer.getUniqueId());
+            issuerName = issuerUser.getInfoTextComponent();
+        } else {
+            issuerName = new TextComponent("Console*");
+        }
         long rightNow = new Date().getTime();
-        Punishment punishment = new Punishment(issuer.getName(), punishmentType,
+        Punishment punishment = new Punishment(issuerName.toString(), punishmentType,
                 plugin.getUtils().convertArray(args, " ", 2), rightNow, rightNow + duration);
         TextComponent cyan = new TextComponent("§b");
         TextComponent hasIssuedAPunishmentTo = new TextComponent(" §fhas issued a §b§o" + punishmentType.name() + " §fto ");
         TextComponent dot = new TextComponent("§f.");
         BaseComponent[] baseComponent = {cyan,
-                issuerUser.getInfoTextComponent(),
+                issuerName,
                 hasIssuedAPunishmentTo,
                 cyan,
                 receiverUser.getInfoTextComponent(),

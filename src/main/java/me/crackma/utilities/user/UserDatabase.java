@@ -72,9 +72,12 @@ public class UserDatabase {
     public CompletableFuture<Void> updateOne(User user) {
         CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET rank = ?, punishments = ? WHERE uuid = ?;")) {
-                preparedStatement.setString(1, user.getRank().toString());
+                if (user.getRank() == null) {
+                    preparedStatement.setString(1, rankManager.getPrimaryRank().toString());
+                } else {
+                    preparedStatement.setString(1, user.getRank().toString());
+                }
                 preparedStatement.setString(2, user.punishmentsToString());
-                Bukkit.getLogger().info(user.punishmentsToString());
                 preparedStatement.setString(3, user.getUniqueId().toString());
                 preparedStatement.execute();
             } catch (SQLException exception) {

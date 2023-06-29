@@ -30,7 +30,11 @@ public class UserListener implements Listener {
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
         User user = userManager.get(player.getUniqueId());
-        if (user == null) event.disallow(PlayerLoginEvent.Result.KICK_OTHER,"§cFailed to get user instance.");
+        Bukkit.getLogger().info(userManager.exists(player.getUniqueId()) + "");
+        if (user == null) {
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER,"§cFailed to get user instance.");
+            return;
+        }
         Punishment activeBan = user.findActiveBan();
         if (activeBan != null) event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§cYou are currently banned for " + activeBan.getFormattedExpiryDate() + ".");
         if (player.hasPlayedBefore()) return;

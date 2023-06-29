@@ -42,6 +42,9 @@ public class UserManager {
         }
         return null;
     }
+    public boolean exists(UUID uuid) {
+        return users.contains(uuid);
+    }
     public void updateOne(User user) {
         PermissionAttachment permissionAttachment = user.getPlayer().addAttachment(plugin);
         Rank rank = user.getRank();

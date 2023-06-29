@@ -1,7 +1,7 @@
 name: Utilities
 version: '${project.version}'
 main: me.crackma.utilities.UtilitiesPlugin
-api-version: 1.19
+api-version: '1.20'
 commands:
   discord:
     description: Sends the discord link.

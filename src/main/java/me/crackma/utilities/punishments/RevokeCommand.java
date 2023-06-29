@@ -2,6 +2,7 @@ package me.crackma.utilities.punishments;
 
 import me.crackma.utilities.UtilitiesPlugin;
 import me.crackma.utilities.user.User;
+import me.crackma.utilities.user.info.InfoGui;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -19,7 +20,7 @@ public class RevokeCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 1) return false;
-        OfflinePlayer player = Bukkit.getPlayer(args[0]);
+        OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
         User user = plugin.getUserManager().get(player.getUniqueId());
         Punishment punishment;
         if (label.equalsIgnoreCase("unban")) {

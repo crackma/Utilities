@@ -2,6 +2,7 @@ package me.crackma.utilities.punishments;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -31,7 +32,10 @@ public class Punishment {
         this.revoked = false;
     }
     public Punishment(String fromString) {
+        if (fromString.trim().isEmpty());
+        Bukkit.getLogger().info("1");
         String[] punishment = fromString.split(",");
+        Bukkit.getLogger().info("2");
         this.issuer = punishment[0];
         this.type = PunishmentType.valueOf(punishment[1]);
         this.reason = punishment[2];
