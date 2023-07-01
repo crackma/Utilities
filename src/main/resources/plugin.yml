@@ -53,4 +53,3 @@ commands:
     usage: §c/rank help
     permission: utilities.rank
     permission-message: §cYou cannot do that.
-

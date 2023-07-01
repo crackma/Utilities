@@ -33,9 +33,7 @@ public class Punishment {
     }
     public Punishment(String fromString) {
         if (fromString.trim().isEmpty());
-        Bukkit.getLogger().info("1");
         String[] punishment = fromString.split(",");
-        Bukkit.getLogger().info("2");
         this.issuer = punishment[0];
         this.type = PunishmentType.valueOf(punishment[1]);
         this.reason = punishment[2];

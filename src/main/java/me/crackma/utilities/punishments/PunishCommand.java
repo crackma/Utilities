@@ -60,7 +60,7 @@ public class PunishCommand implements CommandExecutor {
         PunishmentType punishmentType;
         if (label.equalsIgnoreCase("ban")) {
             punishmentType = PunishmentType.BAN;
-            if (receiverUser.findActiveBan() == null) {
+            if (receiverUser.findActiveBan() != null) {
                 sender.sendMessage("§c" + receiver.getName() + " is already banned.");
                 return true;
             }
@@ -75,12 +75,12 @@ public class PunishCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player issuer = (Player) sender;
             User issuerUser = plugin.getUserManager().get(issuer.getUniqueId());
-            issuerName = issuerUser.getInfoTextComponent();
+            issuerName = new TextComponent(issuer.getName());
         } else {
             issuerName = new TextComponent("Console*");
         }
         long rightNow = new Date().getTime();
-        Punishment punishment = new Punishment(issuerName.toString(), punishmentType,
+        Punishment punishment = new Punishment(issuerName.getText(), punishmentType,
                 plugin.getUtils().convertArray(args, " ", 2), rightNow, rightNow + duration);
         TextComponent cyan = new TextComponent("§b");
         TextComponent hasIssuedAPunishmentTo = new TextComponent(" §fhas issued a §b§o" + punishmentType.name() + " §fto ");
