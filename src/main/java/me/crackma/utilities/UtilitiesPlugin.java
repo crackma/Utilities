@@ -33,12 +33,12 @@ public final class UtilitiesPlugin extends JavaPlugin {
     public void onEnable() {
         getDataFolder().mkdirs();
         saveDefaultConfig();
-        new DiscordCommand(this);
         guiManager = new GuiManager();
         rankManager = new RankManager(this);
         userManager = new UserManager(this);
         userDatabase = new UserDatabase(this);
         utils = new Utils();
+        new DiscordCommand(this);
         new RulesCommand(this);
         new SpawnCommand(this);
         new TestCommand(this);

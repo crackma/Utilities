@@ -29,10 +29,12 @@ public class UserManager {
     }
     public void issuePunishment(User user, Punishment punishment) {
         user.addPunishment(punishment);
+        if (!(user.getOfflinePlayer() instanceof Player)) return;
+        Player player = (Player) user.getOfflinePlayer();
         if (punishment.getType() == PunishmentType.BAN) {
-            user.getPlayer().kickPlayer("§cYou have been banned for " + punishment.getFormattedExpiryDate() + ".");
+            player.kickPlayer("§cYou have been banned for " + punishment.getFormattedExpiryDate() + ".");
         } else {
-            user.getPlayer().sendMessage("§cYou have been muted for " + punishment.getFormattedExpiryDate() + ".");
+        	player.sendMessage("§cYou have been muted for " + punishment.getFormattedExpiryDate() + ".");
         }
     }
     public User get(UUID uniqueId) {
@@ -46,12 +48,16 @@ public class UserManager {
         return users.contains(uuid);
     }
     public void updateOne(User user) {
-        PermissionAttachment permissionAttachment = user.getPlayer().addAttachment(plugin);
+    	if (!(user.getOfflinePlayer() instanceof Player)) {
+    		Bukkit.getLogger().warning("User's player isn't loaded.");
+    		return;
+    	}
+    	Player player = (Player) user.getOfflinePlayer();
+        PermissionAttachment permissionAttachment = player.addAttachment(plugin);
         Rank rank = user.getRank();
         if (rank == null) user.setRank(rankManager.getPrimaryRank());
         rank = user.getRank();
-        rank.getTeam().addEntry(user.getPlayer().getName());
-        Player player = user.getPlayer();
+        rank.getTeam().addEntry(player.getName());
         player.setDisplayName(user.getDisplayName());
         player.setPlayerListName(user.getDisplayName());
         for (Map.Entry<String, Boolean> set: rank.getPermissions().entrySet()) {

@@ -8,7 +8,6 @@ import org.bukkit.scoreboard.Team;
 import java.util.HashMap;
 
 public class Rank {
-    @Getter
     @Setter
     private String name, prefix, suffix;
     @Getter

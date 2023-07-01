@@ -12,6 +12,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class User {
     private final UUID uniqueId;
     @Getter
     @Setter
-    private Player player;
+    private OfflinePlayer offlinePlayer;
     @Getter
     @Setter
     private Rank rank;
@@ -49,13 +50,13 @@ public class User {
         }
     }
     public String getDisplayName() {
-        return ChatColor.translateAlternateColorCodes('&', rank.getPrefix() + player.getName() + rank.getSuffix());
+        return ChatColor.translateAlternateColorCodes('&', rank.getPrefix() + offlinePlayer.getName() + rank.getSuffix());
     }
     public TextComponent getInfoTextComponent() {
         TextComponent textComponent = new TextComponent(getDisplayName());
         textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                new ComponentBuilder("Name: " + player.getName() + "\nRank: " + rank.getName()).create()));
-        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/info " + player.getName()));
+                new ComponentBuilder("Name: " + offlinePlayer.getName() + "\nRank: " + rank.getName()).create()));
+        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/info " + offlinePlayer.getName()));
         return textComponent;
     }
     public void addPunishment(Punishment punishment) {

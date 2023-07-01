@@ -38,12 +38,13 @@ public class UserListener implements Listener {
         if (activeBan != null) event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§cYou are currently banned for " + activeBan.getFormattedExpiryDate() + ".");
         if (player.hasPlayedBefore()) return;
         player.teleport(player.getWorld().getSpawnLocation());
+        Bukkit.broadcastMessage("§7Welcome " + player.getName() + " to the server!");
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         User user = userManager.get(player.getUniqueId());
-        user.setPlayer(player);
+        user.setOfflinePlayer(player);
         userManager.updateOne(user);
     }
     @EventHandler
@@ -67,6 +68,5 @@ public class UserListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         User user = userManager.get(event.getPlayer().getUniqueId());
-        user.setPlayer(null);
     }
 }

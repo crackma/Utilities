@@ -22,6 +22,17 @@ public class RevokeCommand implements CommandExecutor {
         if (args.length > 1) return false;
         OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
         User user = plugin.getUserManager().get(player.getUniqueId());
+        if (user == null) {
+                sender.sendMessage("§7User not cached, searching in the database...");
+                plugin.getUserDatabase().get(player.getUniqueId()).thenAccept(databaseUser -> {
+                    plugin.getUserManager().add(databaseUser);
+                });
+        	user = plugin.getUserManager().get(player.getUniqueId());
+            if (user == null) {
+                sender.sendMessage("§cUser not found.");
+                return true;
+            }
+        }
         Punishment punishment;
         if (label.equalsIgnoreCase("unban")) {
             punishment = user.findActiveBan();
