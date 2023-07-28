@@ -41,7 +41,7 @@ public class UserDatabase {
             }
             try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (uuid,rank,punishments) VALUES (?,?,?);")) {
                 preparedStatement.setString(1, uuid.toString());
-                preparedStatement.setString(2, rankManager.getPrimaryRank().toString());
+                preparedStatement.setString(2, rankManager.getPrimaryRank().getName());
                 preparedStatement.setString(3, "");
                 preparedStatement.execute();
             } catch (SQLException exception) {
@@ -56,6 +56,8 @@ public class UserDatabase {
             try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT rank, punishments FROM users WHERE uuid = ?")) {
                 preparedStatement.setString(1, uuid.toString());
                 ResultSet rs = preparedStatement.executeQuery();
+                System.out.println(rs.getString(1));
+                System.out.println(rs.getString(2));
                 User user = new User(uuid, rankManager.get(rs.getString(1)), rs.getString(2));
                 return user;
             } catch (SQLException exception) {
@@ -73,10 +75,9 @@ public class UserDatabase {
         CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET rank = ?, punishments = ? WHERE uuid = ?;")) {
                 if (user.getRank() == null) {
-                    preparedStatement.setString(1, rankManager.getPrimaryRank().toString());
-                } else {
-                    preparedStatement.setString(1, user.getRank().toString());
+                    user.setRank(rankManager.getPrimaryRank());
                 }
+                preparedStatement.setString(1, user.getRank().getName());
                 preparedStatement.setString(2, user.punishmentsToString());
                 preparedStatement.setString(3, user.getUniqueId().toString());
                 preparedStatement.execute();

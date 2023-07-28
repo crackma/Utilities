@@ -44,7 +44,6 @@ public class User {
         modMode = false;
         if (punishments == null || punishments.trim().isEmpty()) return;
         String[] punishmentsArray = punishments.split(";");
-        Bukkit.getLogger().info(punishments);
         for (String punishment : punishmentsArray) {
             this.punishments.add(new Punishment(punishment));
         }

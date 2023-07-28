@@ -6,7 +6,15 @@ import me.crackma.utilities.punishments.PunishmentType;
 import me.crackma.utilities.rank.Rank;
 import me.crackma.utilities.UtilitiesPlugin;
 import me.crackma.utilities.rank.RankManager;
+import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
+import net.minecraft.server.level.ServerPlayer;
+
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -25,9 +33,11 @@ public class UserManager {
         rankManager = plugin.getRankManager();
     }
     public void add(User user) {
+    	if (user == null) return;
         users.add(user);
     }
     public void issuePunishment(User user, Punishment punishment) {
+    	if (user == null) return;
         user.addPunishment(punishment);
         if (!(user.getOfflinePlayer() instanceof Player)) return;
         Player player = (Player) user.getOfflinePlayer();
@@ -36,6 +46,29 @@ public class UserManager {
         } else {
         	player.sendMessage("§cYou have been muted for " + punishment.getFormattedExpiryDate() + ".");
         }
+    }
+    public void toggleVanish(User user) {
+    	if (user == null) return;
+    	user.setVanished(!user.isVanished());
+    	if (user.isVanished()) {
+    		updateHiddenView();
+    	} else {
+    		updateHiddenView();
+    	}
+    }
+    public void updateHiddenView() {
+    	for (Player player : Bukkit.getOnlinePlayers()) {
+    		if (player.hasPermission("utilities.staff")) continue;
+    		for (User user : users) {
+    			if (!(user.getOfflinePlayer() instanceof Player)) continue;
+    			Player hiddenPlayer = (Player) user.getOfflinePlayer();
+    			if (user.isVanished()) {
+    				player.hidePlayer(plugin, hiddenPlayer);
+    			} else {
+    				player.showPlayer(plugin, hiddenPlayer);
+    			}
+    		}
+    	}
     }
     public User get(UUID uniqueId) {
         for (User user : users) {
@@ -53,13 +86,12 @@ public class UserManager {
     		return;
     	}
     	Player player = (Player) user.getOfflinePlayer();
+    	player.setScoreboard(rankManager.getScoreboard());
         PermissionAttachment permissionAttachment = player.addAttachment(plugin);
         Rank rank = user.getRank();
         if (rank == null) user.setRank(rankManager.getPrimaryRank());
         rank = user.getRank();
         rank.getTeam().addEntry(player.getName());
-        player.setDisplayName(user.getDisplayName());
-        player.setPlayerListName(user.getDisplayName());
         for (Map.Entry<String, Boolean> set: rank.getPermissions().entrySet()) {
             permissionAttachment.setPermission(set.getKey(), set.getValue());
         }

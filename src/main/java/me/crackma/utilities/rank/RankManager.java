@@ -3,6 +3,7 @@ package me.crackma.utilities.rank;
 import lombok.Getter;
 import me.crackma.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,16 +36,24 @@ public class RankManager {
         } catch (IOException | InvalidConfigurationException exception) {
             exception.printStackTrace();
         }
+        load();
+    }
+    public void saveConfiguration() {
+        try {
+            configuration.save(file);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+    public void load() {
         for (String rankName : configuration.getConfigurationSection("").getKeys(false)) {
             if (rankName.equalsIgnoreCase("primary")) continue;
             Rank rank = new Rank(
                     rankName,
                     configuration.getString(rankName + ".prefix"),
                     configuration.getString(rankName + ".suffix"),
+                    ChatColor.valueOf(configuration.getString(rankName + ".nametagColor")),
                     scoreboard.registerNewTeam(configuration.getString(rankName + ".team")));
-            Team team = rank.getTeam();
-            team.setPrefix(rank.getPrefix());
-            team.setSuffix(rank.getPrefix());
             for (String permission : configuration.getStringList("")) {
                 String[] split = permission.split(",");
                 rank.setPermission(split[0], Boolean.valueOf(split[1]));
@@ -55,16 +64,13 @@ public class RankManager {
         this.primaryRank = get(configuration.getString("primary"));
         if (primaryRank == null) {
             Bukkit.getLogger().info("No primary rank was found in ranks.yml, creating one.");
-            Rank rank = new Rank("default", "", "", scoreboard.registerNewTeam("a"));
+            Rank rank = new Rank("default", "", "", ChatColor.WHITE, scoreboard.registerNewTeam("a"));
             create(rank);
         }
     }
-    public void saveConfiguration() {
-        try {
-            configuration.save(file);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+    public void unload() {
+    	ranks.clear();
+    	scoreboard.getTeams().forEach(team -> team.unregister());
     }
     public void setPrimaryRank(Rank rank) {
         primaryRank = rank;
@@ -73,9 +79,6 @@ public class RankManager {
     }
     public void create(Rank rank) {
         ranks.add(rank);
-        Team team = rank.getTeam();
-        team.setPrefix(rank.getPrefix());
-        team.setSuffix(rank.getSuffix());
         String name = rank.getName();
         configuration.set(name + ".prefix", rank.getPrefix());
         configuration.set(name + ".suffix", rank.getSuffix());
@@ -88,10 +91,14 @@ public class RankManager {
         saveConfiguration();
     }
     public void updatePrefix(Rank rank) {
+    	Team team = rank.getTeam();
+    	team.setPrefix(rank.getPrefix());
         configuration.set(rank.getName() + ".prefix", rank.getPrefix());
         saveConfiguration();
     }
     public void updateSuffix(Rank rank) {
+    	Team team = rank.getTeam();
+    	team.setPrefix(rank.getSuffix());
         configuration.set(rank.getName() + ".suffix", rank.getSuffix());
         saveConfiguration();
     }
@@ -105,6 +112,7 @@ public class RankManager {
     }
     public void updateTeam(Rank rank) {
         Team team = rank.getTeam();
+        
         configuration.set(rank.getName() + ".team", team.getName());
         plugin.getUserManager().updateMany(rank);
         saveConfiguration();

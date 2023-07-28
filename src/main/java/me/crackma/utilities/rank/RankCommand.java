@@ -4,7 +4,10 @@ import me.crackma.utilities.UtilitiesPlugin;
 import me.crackma.utilities.user.User;
 import me.crackma.utilities.user.UserDatabase;
 import me.crackma.utilities.user.UserManager;
+
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,15 +38,17 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                 sender.sendMessage("§c/rank create [<name>] [<team>]§f\n" +
                                    "§c/rank permission [<rank>] [<permission>] true/false§f\n" +
                                    "§c/rank meta setPrefix/setSuffix/setTeam [<rank>] [<args>]§f\n" +
-                                   "§c/rank grant [<user>] [<rank>]§f\n" +
+                                   "§c/rank set [<user>] [<rank>]§f\n" +
                                    "§c/rank setPrimary [<rank>]§f\n" +
-                                   "§c/rank remove [<rank>]");
+                                   "§c/rank remove [<rank>]§f\n" + 
+                                   "§c/rank reload");
                 return true;
             case "create":
                 if (args.length < 3) break;
                 rank = rankManager.get(args[1]);
                 if (rank != null) break;
-                rankManager.create(new Rank(args[1], "", "", rankManager.getScoreboard().registerNewTeam(args[2])));
+                rank = new Rank(args[1], "", "", ChatColor.WHITE, rankManager.getScoreboard().registerNewTeam(args[2]));
+                rankManager.create(new Rank(args[1], "", "", ChatColor.WHITE, rankManager.getScoreboard().registerNewTeam(args[2])));
                 sender.sendMessage("§fCreated rank §b" + args[1] + "§f.");
                 return true;
             case "permission":
@@ -97,7 +102,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                 }
                 userManager.updateMany(rank);
                 return true;
-            case "grant":
+            case "set":
                 if (args.length < 2) break;
                 OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
                 if (player == null) break;
@@ -105,8 +110,10 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                 if (user == null) break;
                 rank = rankManager.get(args[2]);
                 if (rank == null) break;
+                user.getRank().getTeam().removeEntry(player.getName());
                 user.setRank(rank);
                 userManager.updateOne(user);
+                userManager.updateHiddenView();
                 userDatabase.updateOne(user);
                 sender.sendMessage("§fSet §b" + player.getName() + "'s §frank to §b" + rank.getName() + "§f.");
                 return true;
@@ -127,9 +134,15 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                 }
                 rankManager.remove(rank.getName());
                 userManager.updateMany(rank);
+                userManager.updateHiddenView();
                 userDatabase.updateMany(rank);
                 sender.sendMessage("§fRemoved rank §b" + rank.getName() + "§f.");
                 return true;
+            case "reload":
+            	rankManager.unload();
+            	rankManager.load();
+            	sender.sendMessage("§fReloaded all ranks.");
+            	return true;
             default:
                 break;
         }
@@ -157,9 +170,10 @@ public class RankCommand implements CommandExecutor, TabCompleter {
             completions.add("create");
             completions.add("permission");
             completions.add("meta");
-            completions.add("grant");
+            completions.add("set");
             completions.add("setPrimary");
             completions.add("remove");
+            completions.add("reload");
             return completions;
         }
         switch (args[0].toLowerCase()) {
@@ -185,11 +199,17 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                     completions.add("setTeam");
                 }
                 if (args.length == 3) rankManager.getRanks().forEach(rank -> completions.add(rank.getName()));
-                if (args.length == 4) completions.add("[<args>]");
+                if (args.length == 4) {
+                	Rank rank = rankManager.get(args[2]);
+                	if (rank == null) break;
+                	if (args[1].equalsIgnoreCase("setprefix")) completions.add(rank.getPrefix());
+                	if (args[1].equalsIgnoreCase("setsuffix")) completions.add(rank.getSuffix());
+                	if (args[1].equalsIgnoreCase("setteam")) completions.add(rank.getTeam().getName());
+                }
                 break;
             //rank grant [<user>] [<rank>]
             case "grant":
-                if (args.length == 2) userManager.getUsers().forEach(user -> completions.add(user.getPlayer().getName()));
+                if (args.length == 2) userManager.getUsers().forEach(user -> completions.add(user.getOfflinePlayer().getName()));
                 if (args.length == 3) rankManager.getRanks().forEach(rank -> completions.add(rank.getName()));
                 break;
             //rank setPrimary [<rank>]

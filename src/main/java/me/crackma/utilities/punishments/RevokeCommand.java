@@ -1,14 +1,14 @@
 package me.crackma.utilities.punishments;
 
-import me.crackma.utilities.UtilitiesPlugin;
-import me.crackma.utilities.user.User;
-import me.crackma.utilities.user.info.InfoGui;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import me.crackma.utilities.UtilitiesPlugin;
+import me.crackma.utilities.user.User;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class RevokeCommand implements CommandExecutor {
     private UtilitiesPlugin plugin;

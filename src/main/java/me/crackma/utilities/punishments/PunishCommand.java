@@ -1,10 +1,9 @@
 package me.crackma.utilities.punishments;
 
-import me.crackma.utilities.UtilitiesPlugin;
-import me.crackma.utilities.user.User;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.TextComponent;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -12,9 +11,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
+import me.crackma.utilities.UtilitiesPlugin;
+import me.crackma.utilities.user.User;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class PunishCommand implements CommandExecutor {
     private final UtilitiesPlugin plugin;
@@ -28,8 +28,10 @@ public class PunishCommand implements CommandExecutor {
         if (args.length < 3) return false;
         OfflinePlayer receiver = Bukkit.getOfflinePlayer(args[0]);
         User receiverUser = plugin.getUserManager().get(receiver.getUniqueId());
-        if (receiverUser == null) {
-            return false;
+        if (receiverUser == null) return false;
+        if (receiverUser.getRank().getPermissions().get("utilities.staff")) {
+        	sender.sendMessage("§cYou cannot punish staff.");
+        	return true;
         }
         String end = String.valueOf(args[1].charAt(args[1].length() - 1));
         long duration;
@@ -71,13 +73,12 @@ public class PunishCommand implements CommandExecutor {
                 return true;
             }
         }
-        TextComponent issuerName;
+        TextComponent issuerName = new TextComponent("Console*");
+        User issuerUser = null;
         if (sender instanceof Player) {
             Player issuer = (Player) sender;
-            User issuerUser = plugin.getUserManager().get(issuer.getUniqueId());
+            issuerUser = plugin.getUserManager().get(issuer.getUniqueId());
             issuerName = new TextComponent(issuer.getName());
-        } else {
-            issuerName = new TextComponent("Console*");
         }
         long rightNow = new Date().getTime();
         Punishment punishment = new Punishment(issuerName.getText(), punishmentType,
@@ -86,7 +87,7 @@ public class PunishCommand implements CommandExecutor {
         TextComponent hasIssuedAPunishmentTo = new TextComponent(" §fhas issued a §b§o" + punishmentType.name() + " §fto ");
         TextComponent dot = new TextComponent("§f.");
         BaseComponent[] baseComponent = {cyan,
-                issuerName,
+                issuerUser == null ? issuerName : issuerUser.getInfoTextComponent(),
                 hasIssuedAPunishmentTo,
                 cyan,
                 receiverUser.getInfoTextComponent(),

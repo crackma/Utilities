@@ -23,9 +23,9 @@ commands:
     permission: utilities.spawn
     permission-message: §cYou cannot do that.
     usage: §c/spawn [player]
-  test:
-    description: test
-    permission: utilities.test
+  vanish:
+    description: Hide from other players.
+    permission: utilities.staff
     permission-message: §cYou cannot do that.
     usage: §c/test
   ban:
