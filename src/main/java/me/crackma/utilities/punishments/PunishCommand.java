@@ -29,7 +29,7 @@ public class PunishCommand implements CommandExecutor {
         OfflinePlayer receiver = Bukkit.getOfflinePlayer(args[0]);
         User receiverUser = plugin.getUserManager().get(receiver.getUniqueId());
         if (receiverUser == null) return false;
-        if (receiverUser.getRank().getPermissions().get("utilities.staff")) {
+        if (receiverUser.getRank().getPermissions().get("utilities.staff") == null || receiverUser.getRank().getPermissions().get("utilities.staff")) {
         	sender.sendMessage("§cYou cannot punish staff.");
         	return true;
         }

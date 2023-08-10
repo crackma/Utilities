@@ -37,7 +37,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
             case "help":
                 sender.sendMessage("§c/rank create [<name>] [<team>]§f\n" +
                                    "§c/rank permission [<rank>] [<permission>] true/false§f\n" +
-                                   "§c/rank meta setPrefix/setSuffix/setTeam [<rank>] [<args>]§f\n" +
+                                   "§c/rank meta setPrefix/setSuffix/setTeam/setNametagColor [<rank>] [<args>]§f\n" +
                                    "§c/rank set [<user>] [<rank>]§f\n" +
                                    "§c/rank setPrimary [<rank>]§f\n" +
                                    "§c/rank remove [<rank>]§f\n" + 
@@ -97,6 +97,9 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                         userManager.updateMany(rank);
                         sender.sendMessage("§fSet rank §b" + rank.getName() + "'s §fteam to §b" + rank.getTeam().getName() + "§f.");
                         return true;
+                    case "setnametagcolor":
+                    	
+                    	return true;
                     default:
                         break;
                 }
@@ -197,6 +200,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                     completions.add("setPrefix");
                     completions.add("setSuffix");
                     completions.add("setTeam");
+                    completions.add("setNametagColor");
                 }
                 if (args.length == 3) rankManager.getRanks().forEach(rank -> completions.add(rank.getName()));
                 if (args.length == 4) {
@@ -205,6 +209,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                 	if (args[1].equalsIgnoreCase("setprefix")) completions.add(rank.getPrefix());
                 	if (args[1].equalsIgnoreCase("setsuffix")) completions.add(rank.getSuffix());
                 	if (args[1].equalsIgnoreCase("setteam")) completions.add(rank.getTeam().getName());
+                	if (args[1].equalsIgnoreCase("setnametagcolor")) ChatColor.WHITE.getDeclaringClass().getEnumConstants();
                 }
                 break;
             //rank grant [<user>] [<rank>]

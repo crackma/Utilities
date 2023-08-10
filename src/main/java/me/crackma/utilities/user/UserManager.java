@@ -1,27 +1,20 @@
 package me.crackma.utilities.user;
 
-import lombok.Getter;
-import me.crackma.utilities.punishments.Punishment;
-import me.crackma.utilities.punishments.PunishmentType;
-import me.crackma.utilities.rank.Rank;
-import me.crackma.utilities.UtilitiesPlugin;
-import me.crackma.utilities.rank.RankManager;
-import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
-import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
-import net.minecraft.server.level.ServerPlayer;
-
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachment;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
+
+import lombok.Getter;
+import me.crackma.utilities.UtilitiesPlugin;
+import me.crackma.utilities.punishments.Punishment;
+import me.crackma.utilities.punishments.PunishmentType;
+import me.crackma.utilities.rank.Rank;
+import me.crackma.utilities.rank.RankManager;
 
 public class UserManager {
     private UtilitiesPlugin plugin;
@@ -76,9 +69,6 @@ public class UserManager {
             return user;
         }
         return null;
-    }
-    public boolean exists(UUID uuid) {
-        return users.contains(uuid);
     }
     public void updateOne(User user) {
     	if (!(user.getOfflinePlayer() instanceof Player)) {

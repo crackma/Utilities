@@ -48,12 +48,20 @@ public class RankManager {
     public void load() {
         for (String rankName : configuration.getConfigurationSection("").getKeys(false)) {
             if (rankName.equalsIgnoreCase("primary")) continue;
+            String prefix = configuration.getString(rankName + ".prefix");
+            String suffix = configuration.getString(rankName + ".suffix");
+            String nametagColor = configuration.getString(rankName + ".nametagColor");
+            String team = configuration.getString(rankName + ".team");
+            if (prefix == null || suffix == null || nametagColor == null || team == null) {
+            	Bukkit.getLogger().warning("Halted loading " + rankName + " rank since it's information is incomplete.");
+            	continue;
+            }
             Rank rank = new Rank(
                     rankName,
-                    configuration.getString(rankName + ".prefix"),
-                    configuration.getString(rankName + ".suffix"),
-                    ChatColor.valueOf(configuration.getString(rankName + ".nametagColor")),
-                    scoreboard.registerNewTeam(configuration.getString(rankName + ".team")));
+                    prefix,
+                    suffix,
+                    ChatColor.valueOf(nametagColor),
+                    scoreboard.registerNewTeam(team));
             for (String permission : configuration.getStringList("")) {
                 String[] split = permission.split(",");
                 rank.setPermission(split[0], Boolean.valueOf(split[1]));
@@ -82,6 +90,7 @@ public class RankManager {
         String name = rank.getName();
         configuration.set(name + ".prefix", rank.getPrefix());
         configuration.set(name + ".suffix", rank.getSuffix());
+        configuration.set(name + ".nametagColor", rank.getNametagColor().toString());
         configuration.set(name + ".team", rank.getTeam().getName());
         List<String> permissions = new ArrayList<>();
         for (Map.Entry<String, Boolean> set : rank.getPermissions().entrySet()) {

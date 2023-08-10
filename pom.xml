@@ -77,7 +77,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>C:\Users\frandma\Documents\mcserver\plugins</outputDirectory>
+                    <outputDirectory>D:\minecraft\server\plugins</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

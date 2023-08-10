@@ -1,12 +1,12 @@
 package me.crackma.utilities.rank;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
-import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.scoreboard.Team;
 
-import java.util.HashMap;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Rank {
 	@Getter

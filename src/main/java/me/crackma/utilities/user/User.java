@@ -1,5 +1,12 @@
 package me.crackma.utilities.user;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+
 import lombok.Getter;
 import lombok.Setter;
 import me.crackma.utilities.punishments.Punishment;
@@ -9,15 +16,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 public class User {
     @Getter

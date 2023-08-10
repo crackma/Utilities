@@ -1,14 +1,11 @@
 package me.crackma.utilities.punishments;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.Bukkit;
-
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
-import java.util.TimeZone;
-import java.util.UUID;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class Punishment {
 

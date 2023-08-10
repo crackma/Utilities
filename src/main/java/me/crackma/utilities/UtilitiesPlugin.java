@@ -5,7 +5,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import lombok.Getter;
 import me.crackma.utilities.commands.DiscordCommand;
 import me.crackma.utilities.commands.RulesCommand;
-import me.crackma.utilities.commands.SpawnCommand;
 import me.crackma.utilities.commands.VanishCommand;
 import me.crackma.utilities.gui.GuiListener;
 import me.crackma.utilities.gui.GuiManager;
@@ -13,6 +12,7 @@ import me.crackma.utilities.punishments.PunishCommand;
 import me.crackma.utilities.punishments.RevokeCommand;
 import me.crackma.utilities.rank.RankCommand;
 import me.crackma.utilities.rank.RankManager;
+import me.crackma.utilities.spawn.SpawnCommand;
 import me.crackma.utilities.user.UserDatabase;
 import me.crackma.utilities.user.UserListener;
 import me.crackma.utilities.user.UserManager;
@@ -52,6 +52,5 @@ public final class UtilitiesPlugin extends JavaPlugin {
     }
     @Override
     public void onDisable() {
-    	rankManager.unload();
     }
 }
