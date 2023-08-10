@@ -56,8 +56,6 @@ public class UserDatabase {
             try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT rank, punishments FROM users WHERE uuid = ?")) {
                 preparedStatement.setString(1, uuid.toString());
                 ResultSet rs = preparedStatement.executeQuery();
-                System.out.println(rs.getString(1));
-                System.out.println(rs.getString(2));
                 User user = new User(uuid, rankManager.get(rs.getString(1)), rs.getString(2));
                 return user;
             } catch (SQLException exception) {
