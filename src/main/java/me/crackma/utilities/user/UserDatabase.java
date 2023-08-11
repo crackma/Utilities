@@ -30,15 +30,16 @@ public class UserDatabase {
             Bukkit.getLogger().severe(exception.toString());
         }
     }
-    public CompletableFuture<Void> insert(UUID uuid) {
-        CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE uuid = ?;")) {
-                preparedStatement.setString(1, uuid.toString());
-                ResultSet rs = preparedStatement.executeQuery();
-                if (rs.getString(1) != null) return null;
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
+    public User getOrCreate(UUID uuid) {
+    	boolean exists = false;
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE uuid = ?;")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.getString(1) != null) exists = true;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        if (!exists) {
             try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (uuid,rank,punishments) VALUES (?,?,?);")) {
                 preparedStatement.setString(1, uuid.toString());
                 preparedStatement.setString(2, rankManager.getPrimaryRank().getName());
@@ -46,10 +47,17 @@ public class UserDatabase {
                 preparedStatement.execute();
             } catch (SQLException exception) {
                 exception.printStackTrace();
-            }
+            } 
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT rank, punishments FROM users WHERE uuid = ?")) {
+            preparedStatement.setString(1, uuid.toString());
+            ResultSet rs = preparedStatement.executeQuery();
+            User user = new User(uuid, rankManager.get(rs.getString(1)), rs.getString(2));
+            return user;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
             return null;
-        });
-        return future;
+        }
     }
     public CompletableFuture<User> get(UUID uuid) {
         CompletableFuture<User> future = CompletableFuture.supplyAsync(() -> {

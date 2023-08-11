@@ -37,8 +37,8 @@ public class PunishmentsGui extends Gui {
         itemMeta.setLore(Arrays.asList(
                 "§fIssuer: §b" + punishment.getIssuer(),
                 "§fReason: §b" + punishment.getReason(),
-                "§fIssued: §b" + punishment.getIssueDate(),
-                "§fExpires: §b" + punishment.getExpiryDate(),
+                "§fIssue date: §b" + punishment.getIssueDate(),
+                "§fExpiry date: §b" + punishment.getExpiryDate(),
                 "§fRevoked: §b" + punishment.isRevoked()));
         itemStack.setItemMeta(itemMeta);
         this.addButton(inventorySlot, new GuiButton().creator(unused -> itemStack));

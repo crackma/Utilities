@@ -90,7 +90,7 @@ public class RankManager {
         String name = rank.getName();
         configuration.set(name + ".prefix", rank.getPrefix());
         configuration.set(name + ".suffix", rank.getSuffix());
-        configuration.set(name + ".nametagColor", rank.getNametagColor().toString());
+        configuration.set(name + ".nametagColor", rank.getNameColor().name());
         configuration.set(name + ".team", rank.getTeam().getName());
         List<String> permissions = new ArrayList<>();
         for (Map.Entry<String, Boolean> set : rank.getPermissions().entrySet()) {
@@ -111,19 +111,27 @@ public class RankManager {
         configuration.set(rank.getName() + ".suffix", rank.getSuffix());
         saveConfiguration();
     }
+    public void updateNameColor(Rank rank) {
+    	Team team = rank.getTeam();
+    	team.setColor(rank.getNameColor());
+    	configuration.set(rank.getName() + ".nameColor", rank.getNameColor().name());
+    	saveConfiguration();
+    }
+    public void updateTeam(Rank rank) {
+        Team team = rank.getTeam();
+        team.setPrefix(rank.getPrefix());
+        team.setSuffix(rank.getSuffix());
+        team.setColor(rank.getNameColor());
+        configuration.set(rank.getName() + ".team", team.getName());
+        plugin.getUserManager().updateMany(rank);
+        saveConfiguration();
+    }
     public void updatePermissions(Rank rank) {
         List<String> permissions = new ArrayList<>();
         for (Map.Entry<String, Boolean> set: rank.getPermissions().entrySet()) {
             permissions.add(set.getKey() + "," + set.getValue());
         }
         configuration.set(rank.getName() + ".permissions", permissions);
-        saveConfiguration();
-    }
-    public void updateTeam(Rank rank) {
-        Team team = rank.getTeam();
-        
-        configuration.set(rank.getName() + ".team", team.getName());
-        plugin.getUserManager().updateMany(rank);
         saveConfiguration();
     }
     public Rank get(String name) {

@@ -1,7 +1,8 @@
-package me.crackma.utilities.spawn;
+package me.crackma.utilities.commands;
 
 import me.crackma.utilities.UtilitiesPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,7 +17,10 @@ public class SpawnCommand implements CommandExecutor {
         if (args.length == 0) {
             if (!(sender instanceof Player)) return false;
             Player player = (Player) sender;
-            player.teleport(player.getWorld().getSpawnLocation());
+            Location loc = player.getWorld().getSpawnLocation();
+            loc.setX(loc.getX() + 0.5);
+            loc.setZ(loc.getZ() + 0.5);
+            player.teleport(loc);
             return true;
         }
         if (!sender.hasPermission("utilities.spawn.others")) {
@@ -25,7 +29,10 @@ public class SpawnCommand implements CommandExecutor {
         }
         Player player = Bukkit.getPlayer(args[0]);
         if (player == null) return false;
-        player.teleport(player.getWorld().getSpawnLocation());
+        Location loc = player.getWorld().getSpawnLocation();
+        loc.setX(loc.getX() + 0.5);
+        loc.setZ(loc.getZ() + 0.5);
+        player.teleport(loc);
         return true;
     }
 }

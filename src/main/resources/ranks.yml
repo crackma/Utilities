@@ -1,7 +1,7 @@
 default:
   prefix: §7
   suffix: §6*
-  nametagColor: GRAY
+  nameColor: GRAY
   team: a
   permissions:
     - utilities.discord,true

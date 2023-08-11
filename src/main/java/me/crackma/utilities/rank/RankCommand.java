@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 public class RankCommand implements CommandExecutor, TabCompleter {
@@ -37,7 +38,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
             case "help":
                 sender.sendMessage("§c/rank create [<name>] [<team>]§f\n" +
                                    "§c/rank permission [<rank>] [<permission>] true/false§f\n" +
-                                   "§c/rank meta setPrefix/setSuffix/setTeam/setNametagColor [<rank>] [<args>]§f\n" +
+                                   "§c/rank meta setPrefix/setSuffix/setTeam/setNameColor [<rank>] [<args>]§f\n" +
                                    "§c/rank set [<user>] [<rank>]§f\n" +
                                    "§c/rank setPrimary [<rank>]§f\n" +
                                    "§c/rank remove [<rank>]§f\n" + 
@@ -97,8 +98,13 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                         userManager.updateMany(rank);
                         sender.sendMessage("§fSet rank §b" + rank.getName() + "'s §fteam to §b" + rank.getTeam().getName() + "§f.");
                         return true;
-                    case "setnametagcolor":
-                    	
+                    case "setnamecolor":
+                    	if (args.length < 4) break;
+                    	ChatColor chatColor = ChatColor.valueOf(args[3].toUpperCase());
+                    	if (chatColor == null) break;
+                    	rank.setNameColor(chatColor);
+                    	rankManager.updateNameColor(rank);
+                    	sender.sendMessage("§fSet rank §b" + rank.getName() + "'s §fname color to §b" + chatColor.name() + "§f.");
                     	return true;
                     default:
                         break;
@@ -200,7 +206,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                     completions.add("setPrefix");
                     completions.add("setSuffix");
                     completions.add("setTeam");
-                    completions.add("setNametagColor");
+                    completions.add("setNameColor");
                 }
                 if (args.length == 3) rankManager.getRanks().forEach(rank -> completions.add(rank.getName()));
                 if (args.length == 4) {
@@ -209,11 +215,11 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                 	if (args[1].equalsIgnoreCase("setprefix")) completions.add(rank.getPrefix());
                 	if (args[1].equalsIgnoreCase("setsuffix")) completions.add(rank.getSuffix());
                 	if (args[1].equalsIgnoreCase("setteam")) completions.add(rank.getTeam().getName());
-                	if (args[1].equalsIgnoreCase("setnametagcolor")) ChatColor.WHITE.getDeclaringClass().getEnumConstants();
+                	if (args[1].equalsIgnoreCase("setnamecolor")) for (ChatColor chatColor : ChatColor.values()) completions.add(chatColor.name());
                 }
                 break;
-            //rank grant [<user>] [<rank>]
-            case "grant":
+            //rank set [<user>] [<rank>]
+            case "set":
                 if (args.length == 2) userManager.getUsers().forEach(user -> completions.add(user.getOfflinePlayer().getName()));
                 if (args.length == 3) rankManager.getRanks().forEach(rank -> completions.add(rank.getName()));
                 break;

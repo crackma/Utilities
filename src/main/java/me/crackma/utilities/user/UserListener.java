@@ -3,6 +3,7 @@ package me.crackma.utilities.user;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,62 +23,52 @@ import me.crackma.utilities.rank.RankManager;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class UserListener implements Listener {
-	private UtilitiesPlugin plugin;
     private UserManager userManager;
     private UserDatabase userDatabase;
     private RankManager rankManager;
     public UserListener(UtilitiesPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        this.plugin = plugin;
         userManager = plugin.getUserManager();
         userDatabase = plugin.getUserDatabase();
         rankManager = plugin.getRankManager();
     }
     @EventHandler
     public void onPreLogin(AsyncPlayerPreLoginEvent event) {
-    	
+    	UUID uuid = event.getUniqueId();
+    	User user = userManager.get(uuid);
+    	if (user == null) {
+    		user = userDatabase.getOrCreate(uuid);
+    		userManager.add(user);
+    	}
+        if (user.getRank() == null) user.setRank(rankManager.getPrimaryRank());
     }
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-        userDatabase.insert(uuid).thenCompose(unused -> userDatabase.get(uuid).thenAccept(user -> {
-        	if (user.getRank() == null) user.setRank(rankManager.getPrimaryRank());
-            if (userManager.get(uuid) == null) userManager.add(user);
-        }));
-        if (userManager.get(uuid) == null) {
-        	new BukkitRunnable() {
-        		int retries = 0;
-        		  @Override
-        		  public void run() {
-              		retries++;
-              		User user = userManager.get(uuid);
-            		if (user != null) {
-            	        userManager.updateOne(user);
-            	        userManager.updateHiddenView();
-            	        Punishment activeBan = user.findActiveBan();
-            	        if (activeBan != null) event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§cYou are currently banned for " + activeBan.getFormattedExpiryDate() + ".");
-            	        if (player.hasPlayedBefore()) return;
-            	        player.teleport(player.getWorld().getSpawnLocation());
-            			cancel();
-            		}
-            		if (retries == 5) {
-                    	event.disallow(PlayerLoginEvent.Result.KICK_OTHER,"§cFailed to get user instance even after 5 retries.");
-            			cancel();
-            		}
-        		  }
-        		}.runTaskTimer(plugin, 10L, 10L);
-            return;
-        }
+        User user = userManager.get(uuid);
+        if (user == null) { event.disallow(PlayerLoginEvent.Result.KICK_OTHER,"§cCouldn't get user instance."); return; }
+	    Punishment activeBan = user.findActiveBan();
+        if (activeBan != null) { event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§cYou are currently banned for " + activeBan.getFormattedExpiryDate() + "."); return; }
+        user.setOfflinePlayer(player);
+	    userManager.updateHiddenView();
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
     	event.setJoinMessage(null);
         Player player = event.getPlayer();
         User user = userManager.get(player.getUniqueId());
-        user.setOfflinePlayer(player);
+        userManager.updateOne(user);
         if (player.hasPlayedBefore()) return;
+        Location loc = player.getWorld().getSpawnLocation();
+        loc.setX(loc.getX() + 0.5);
+        loc.setZ(loc.getZ() + 0.5);
+        player.teleport(loc);
         Bukkit.broadcastMessage(user.getDisplayName() + " §fhas joined the server for the first time!");
+    }
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+    	event.setQuitMessage(null);
     }
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
@@ -109,9 +100,5 @@ public class UserListener implements Listener {
     	if (!(newEvent.getDamager() instanceof Player)) return;
     	Player attacker = (Player) newEvent.getDamager();
     	attacker.sendMessage("§cYou cannot attack " + victim.getName() + ".");
-    }
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-    	event.setQuitMessage(null);
     }
 }
