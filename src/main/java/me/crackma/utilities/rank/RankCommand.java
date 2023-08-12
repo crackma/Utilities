@@ -13,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -47,9 +48,11 @@ public class RankCommand implements CommandExecutor, TabCompleter {
             case "create":
                 if (args.length < 3) break;
                 rank = rankManager.get(args[1]);
-                if (rank != null) break;
+                if (rank != null) break; 
+                Team team = rankManager.getScoreboard().getTeam(args[2]);
+                if (team != null) break;
                 rank = new Rank(args[1], "", "", ChatColor.WHITE, rankManager.getScoreboard().registerNewTeam(args[2]));
-                rankManager.create(new Rank(args[1], "", "", ChatColor.WHITE, rankManager.getScoreboard().registerNewTeam(args[2])));
+                rankManager.create(rank);
                 sender.sendMessage("§fCreated rank §b" + args[1] + "§f.");
                 return true;
             case "permission":
@@ -81,8 +84,8 @@ public class RankCommand implements CommandExecutor, TabCompleter {
                     case "setsuffix":
                         if (args.length < 4) {
                             rank.setSuffix("");
-                            rankManager.updatePrefix(rank);
-                            sender.sendMessage("§fCleared rank §b" + rank.getName() + "'s §fprefix.");
+                            rankManager.updateSuffix(rank);
+                            sender.sendMessage("§fCleared rank §b" + rank.getName() + "'s §fsuffix.");
                             return true;
                         }
                         rank.setSuffix(convertArray(args, " ", 3));

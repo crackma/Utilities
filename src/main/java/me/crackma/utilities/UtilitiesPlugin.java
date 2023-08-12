@@ -52,5 +52,6 @@ public final class UtilitiesPlugin extends JavaPlugin {
     }
     @Override
     public void onDisable() {
+        rankManager.unload();
     }
 }

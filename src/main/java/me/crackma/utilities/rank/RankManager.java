@@ -50,9 +50,9 @@ public class RankManager {
             if (rankName.equalsIgnoreCase("primary")) continue;
             String prefix = configuration.getString(rankName + ".prefix");
             String suffix = configuration.getString(rankName + ".suffix");
-            String nametagColor = configuration.getString(rankName + ".nametagColor");
+            String nameColor = configuration.getString(rankName + ".nameColor");
             String team = configuration.getString(rankName + ".team");
-            if (prefix == null || suffix == null || nametagColor == null || team == null) {
+            if (prefix == null || suffix == null || nameColor == null || team == null) {
             	Bukkit.getLogger().warning("Halted loading " + rankName + " rank since it's information is incomplete.");
             	continue;
             }
@@ -60,7 +60,7 @@ public class RankManager {
                     rankName,
                     prefix,
                     suffix,
-                    ChatColor.valueOf(nametagColor),
+                    ChatColor.valueOf(nameColor),
                     scoreboard.registerNewTeam(team));
             for (String permission : configuration.getStringList("")) {
                 String[] split = permission.split(",");
@@ -90,7 +90,7 @@ public class RankManager {
         String name = rank.getName();
         configuration.set(name + ".prefix", rank.getPrefix());
         configuration.set(name + ".suffix", rank.getSuffix());
-        configuration.set(name + ".nametagColor", rank.getNameColor().name());
+        configuration.set(name + ".nameColor", rank.getNameColor().name());
         configuration.set(name + ".team", rank.getTeam().getName());
         List<String> permissions = new ArrayList<>();
         for (Map.Entry<String, Boolean> set : rank.getPermissions().entrySet()) {
@@ -107,7 +107,7 @@ public class RankManager {
     }
     public void updateSuffix(Rank rank) {
     	Team team = rank.getTeam();
-    	team.setPrefix(rank.getSuffix());
+    	team.setSuffix(rank.getSuffix());
         configuration.set(rank.getName() + ".suffix", rank.getSuffix());
         saveConfiguration();
     }

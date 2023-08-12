@@ -1,6 +1,8 @@
-# discord link that gets sent on /discord
 discord: https://discord.gg/packetpool/
+tab:
+  header: ""
+  footer: "&enetworklayer.net"
 rules:
-  Cheating: Any use of external tools is not allowed.
-  Exploiting: Exploiting unintended features of this server is not allowed.
-  Chat: Toxicity, spamming, discrimination and other kinds of chat abuse is not allowed.
+  - "&c1. External tools that give you an advantage are not allowed."
+  - "&c2. Exploiting unintended features of this server is not allowed."
+  - "&c3. Advertising, spamming, discrimination or any other kind of chat abuse is not allowed."

@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
@@ -77,6 +79,10 @@ public class UserManager {
     		return;
     	}
     	Player player = (Player) user.getOfflinePlayer();
+        FileConfiguration configuration = plugin.getConfig();
+        String header = ChatColor.translateAlternateColorCodes('&', configuration.getString("tab.header"));
+        String footer = ChatColor.translateAlternateColorCodes('&', configuration.getString("tab.footer"));
+        player.setPlayerListHeaderFooter(header, footer);
     	player.setScoreboard(rankManager.getScoreboard());
         PermissionAttachment permissionAttachment = player.addAttachment(plugin);
         Rank rank = user.getRank();

@@ -1,6 +1,8 @@
 name: Utilities
 version: '${project.version}'
 main: me.crackma.utilities.UtilitiesPlugin
+author: crackma
+website: https://github.com/crackma/
 api-version: '1.20'
 commands:
   discord:
