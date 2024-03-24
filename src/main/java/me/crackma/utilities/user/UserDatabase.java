@@ -27,7 +27,7 @@ public class UserDatabase {
                 preparedStatement.execute();
             }
         } catch (SQLException | ClassNotFoundException exception) {
-            Bukkit.getLogger().severe(exception.toString());
+            exception.printStackTrace();
         }
     }
     public User getOrCreate(UUID uuid) {

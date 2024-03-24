@@ -14,38 +14,38 @@ import me.crackma.utilities.UtilitiesPlugin;
 import me.crackma.utilities.user.User;
 
 public class InfoCommand implements CommandExecutor, Listener {
-    private UtilitiesPlugin plugin;
-    public InfoCommand(UtilitiesPlugin plugin) {
-        this.plugin = plugin;
-        plugin.getCommand("info").setExecutor(this);
+  private UtilitiesPlugin plugin;
+  public InfoCommand(UtilitiesPlugin plugin) {
+    this.plugin = plugin;
+    plugin.getCommand("info").setExecutor(this);
+  }
+  @Override
+  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if (!(sender instanceof Player)) return true;
+    if (args.length < 1) {
+      Player player = (Player) sender;
+      User user = plugin.getUserManager().get(player.getUniqueId());
+      plugin.getGuiManager().openGUI(new InfoGui(plugin, user), player);
+      return true;
     }
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) return true;
-        if (args.length < 1) {
-            Player player = (Player) sender;
-            User user = plugin.getUserManager().get(player.getUniqueId());
-            plugin.getGuiManager().openGUI(new InfoGui(plugin, user), player);
-            return true;
+    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[0]);
+    if (offlinePlayer == null) return false;
+    Player player = (Player) sender;
+    UUID uniqueId = offlinePlayer.getUniqueId();
+    User targetUser = plugin.getUserManager().get(uniqueId);
+    if (targetUser == null) {
+      sender.sendMessage("§7User not cached, searching in the database...");
+      plugin.getUserDatabase().get(uniqueId).thenAccept(databaseUser -> {
+        if (databaseUser == null) {
+          sender.sendMessage("§cUser not found.");
+          return;
         }
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[0]);
-        if (offlinePlayer == null) return false;
-        Player player = (Player) sender;
-        UUID uniqueId = offlinePlayer.getUniqueId();
-        User targetUser = plugin.getUserManager().get(uniqueId);
-        if (targetUser == null) {
-            sender.sendMessage("§7User not cached, searching in the database...");
-            plugin.getUserDatabase().get(uniqueId).thenAccept(databaseUser -> {
-                if (databaseUser == null) {
-                    sender.sendMessage("§cUser not found.");
-                    return;
-                }
-                plugin.getGuiManager().openGUI(new InfoGui(plugin, databaseUser), player);
-            });
-        } else {
-            plugin.getGuiManager().openGUI(new InfoGui(plugin, targetUser), player);
-        }
-        return true;
+        plugin.getGuiManager().openGUI(new InfoGui(plugin, databaseUser), player);
+      });
+    } else {
+      plugin.getGuiManager().openGUI(new InfoGui(plugin, targetUser), player);
     }
+    return true;
+  }
 
 }

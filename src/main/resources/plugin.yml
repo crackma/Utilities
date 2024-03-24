@@ -10,6 +10,22 @@ commands:
     permission: utilities.discord
     permission-message: §cYou cannot do that.
     usage: §c/discord
+  message:
+    description: Send private messages to players.
+    aliases: [msg, whisper, w, reply, r]
+    permission: utilities.message
+    permission-message: §cYou cannot do that.
+    usage: §c/message <player> <message>
+  mutechat:
+    description: Disable chat for most of the players.
+    permission: utilities.mutechat
+    permission-message: §cYou cannot do that.
+    usage: §c/mutechat
+  rename:
+    description: Rename currently held item.
+    permission: utilities.rename
+    permission-message: §cYou cannot do that.
+    usage: §c/rename <name>
   rules:
     description: View the rules.
     usage: §c/rules
@@ -20,11 +36,13 @@ commands:
     permission: utilities.spawn
     permission-message: §cYou cannot do that.
     usage: §c/spawn [player]
+  test:
+    description: testesstestsetsetestsetsetseesttestesstetestsetsetsetsetsetestestestestetsetsetsestetsetsetsetsestetsetsetesstetesstetesesttesetstestsetetse
   vanish:
     description: Hide from other players.
     permission: utilities.staff
     permission-message: §cYou cannot do that.
-    usage: §c/test
+    usage: §c/vanish
   ban:
     description: Ban rule breakers.
     permission: utilities.ban
@@ -34,7 +52,7 @@ commands:
     description: Revoke bans.
     permission: utilities.ban
     permission-message: §cYou cannot do that.
-    usage: §c/<command>
+    usage: §c/<command> <player>
   mute:
     description: Mute rule breakers.
     permission: utilities.mute
@@ -44,7 +62,7 @@ commands:
     description: Revoke mutes.
     permission: utilities.mute
     permission-message: §cYou cannot do that.
-    usage: §c/<command>
+    usage: §c/<command> <player>
   rank:
     description: Manage permissions.
     usage: §c/rank help

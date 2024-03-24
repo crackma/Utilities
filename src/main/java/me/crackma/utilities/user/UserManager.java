@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -78,25 +77,29 @@ public class UserManager {
     		Bukkit.getLogger().warning("User's player isn't loaded.");
     		return;
     	}
-    	Player player = (Player) user.getOfflinePlayer();
-        FileConfiguration configuration = plugin.getConfig();
-        String header = ChatColor.translateAlternateColorCodes('&', configuration.getString("tab.header"));
-        String footer = ChatColor.translateAlternateColorCodes('&', configuration.getString("tab.footer"));
-        player.setPlayerListHeaderFooter(header, footer);
-    	player.setScoreboard(rankManager.getScoreboard());
-        PermissionAttachment permissionAttachment = player.addAttachment(plugin);
-        Rank rank = user.getRank();
-        if (rank == null) user.setRank(rankManager.getPrimaryRank());
-        rank = user.getRank();
-        rank.getTeam().addEntry(player.getName());
-        for (Map.Entry<String, Boolean> set: rank.getPermissions().entrySet()) {
-            permissionAttachment.setPermission(set.getKey(), set.getValue());
-        }
+      Player player = (Player) user.getOfflinePlayer();
+      FileConfiguration configuration = plugin.getConfig();
+      String header = ChatColor.translateAlternateColorCodes('&', configuration.getString("tab.header"));
+      String footer = ChatColor.translateAlternateColorCodes('&', configuration.getString("tab.footer"));
+      player.setPlayerListHeaderFooter(header, footer);
+      player.setScoreboard(rankManager.getScoreboard());
+      PermissionAttachment permissionAttachment = user.getPermissionAttachment();
+      if (permissionAttachment != null) permissionAttachment.remove();
+      permissionAttachment = player.addAttachment(plugin);
+      user.setPermissionAttachment(permissionAttachment);
+      Rank rank = user.getRank();
+      if (rank == null) user.setRank(rankManager.getPrimaryRank());
+      rank = user.getRank();
+      rankManager.getScoreboard().getTeams().forEach(team -> team.removeEntry(player.getName()));
+      rank.getTeam().addEntry(player.getName());
+      for (Map.Entry<String, Boolean> set : rank.getPermissions().entrySet()) {
+        permissionAttachment.setPermission(set.getKey(), set.getValue());
+      }
     }
-    public void updateMany(Rank rank) {
-        for (User user : users) {
-            if (user.getRank() != rank) continue;
-            updateOne(user);
-        }
+  public void updateMany(Rank rank) {
+    for (User user : users) {
+      if (user.getRank() != rank) continue;
+      updateOne(user);
     }
+  }
 }

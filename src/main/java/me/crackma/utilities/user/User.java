@@ -16,28 +16,26 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.permissions.PermissionAttachment;
 
+@Getter
 public class User {
-    @Getter
     private final UUID uniqueId;
-    @Getter
     @Setter
     private OfflinePlayer offlinePlayer;
-    @Getter
     @Setter
     private Rank rank;
-    @Getter
     private Set<Punishment> punishments = new HashSet<>();
-    @Getter
+    @Setter
+    private PermissionAttachment permissionAttachment;
     @Setter
     private boolean vanished;
-    @Getter
     @Setter
     private boolean modMode;
     public User(UUID uniqueId, Rank rank, String punishments) {
         this.uniqueId = uniqueId;
         this.rank = rank;
-        //TODO: add vanish and moderator mode
+        //TODO: add moderator mode
         vanished = false;
         modMode = false;
         if (punishments == null || punishments.trim().isEmpty()) return;
@@ -53,7 +51,7 @@ public class User {
         TextComponent textComponent = new TextComponent(getDisplayName());
         textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new ComponentBuilder("Name: " + offlinePlayer.getName() + "\nRank: " + rank.getName()).create()));
-        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/info " + offlinePlayer.getName()));
+        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/utilities:info " + offlinePlayer.getName()));
         return textComponent;
     }
     public void addPunishment(Punishment punishment) {

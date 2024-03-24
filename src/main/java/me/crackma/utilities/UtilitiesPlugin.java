@@ -1,12 +1,10 @@
 package me.crackma.utilities;
 
+import me.crackma.utilities.commands.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
-import me.crackma.utilities.commands.DiscordCommand;
-import me.crackma.utilities.commands.RulesCommand;
-import me.crackma.utilities.commands.SpawnCommand;
-import me.crackma.utilities.commands.VanishCommand;
+import lombok.Setter;
 import me.crackma.utilities.gui.GuiListener;
 import me.crackma.utilities.gui.GuiManager;
 import me.crackma.utilities.punishments.PunishCommand;
@@ -19,17 +17,15 @@ import me.crackma.utilities.user.UserManager;
 import me.crackma.utilities.user.info.InfoCommand;
 import me.crackma.utilities.utils.Utils;
 
+@Getter
 public final class UtilitiesPlugin extends JavaPlugin {
-    @Getter
     private GuiManager guiManager;
-    @Getter
     private RankManager rankManager;
-    @Getter
     private UserManager userManager;
-    @Getter
     private UserDatabase userDatabase;
-    @Getter
     private Utils utils;
+    @Setter
+    private boolean chatMuted;
     @Override
     public void onEnable() {
         getDataFolder().mkdirs();
@@ -39,14 +35,19 @@ public final class UtilitiesPlugin extends JavaPlugin {
         userManager = new UserManager(this);
         userDatabase = new UserDatabase(this);
         utils = new Utils();
+        chatMuted = false;
         new DiscordCommand(this);
+        new MessageCommand(this);
+        new MuteChatCommand(this);
+        new RenameCommand(this);
         new RulesCommand(this);
+        new SpawnCommand(this);
+        new TestCommand(this);
         new VanishCommand(this);
         new GuiListener(this);
         new PunishCommand(this);
         new RevokeCommand(this);
         new RankCommand(this);
-        new SpawnCommand(this);
         new InfoCommand(this);
         new UserListener(this);
     }

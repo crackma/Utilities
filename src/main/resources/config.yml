@@ -1,4 +1,6 @@
-discord: https://discord.gg/packetpool/
+discord: "https://discord.gg/packetpool/"
+joinMessage:
+  - "&dJoin the discord by doing /discord."
 tab:
   header: ""
   footer: "&enetworklayer.net"
