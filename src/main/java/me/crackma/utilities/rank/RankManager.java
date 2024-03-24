@@ -144,8 +144,8 @@ public class RankManager {
     return null;
   }
   public void remove(Rank rank) {
+    rank.getTeam().unregister();
     ranks.remove(rank);
-    scoreboard.getTeam(rank.getName()).unregister();
     configuration.set(rank.getName(), null);
     saveConfiguration();
   }

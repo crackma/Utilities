@@ -88,10 +88,13 @@ public class UserManager {
       permissionAttachment = player.addAttachment(plugin);
       user.setPermissionAttachment(permissionAttachment);
       Rank rank = user.getRank();
-      if (rank == null) user.setRank(rankManager.getPrimaryRank());
-      rank = user.getRank();
-      rankManager.getScoreboard().getTeams().forEach(team -> team.removeEntry(player.getName()));
-      rank.getTeam().addEntry(player.getName());
+      try {
+        rank.getTeam().addEntry(player.getName());
+      } catch (IllegalStateException exception) {
+        rank = rankManager.getPrimaryRank();
+        user.setRank(rank);
+        rank.getTeam().addEntry(player.getName());
+      }
       for (Map.Entry<String, Boolean> set : rank.getPermissions().entrySet()) {
         permissionAttachment.setPermission(set.getKey(), set.getValue());
       }

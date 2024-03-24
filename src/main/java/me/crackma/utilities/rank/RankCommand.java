@@ -64,7 +64,6 @@ public class RankCommand implements CommandExecutor, TabCompleter {
         if (!rank.getPurePrefix().isEmpty()) info = info + "\n§fPrefix: §b" + rank.getPurePrefix();
         if (!rank.getPureSuffix().isEmpty()) info = info + "\n§fSuffix: §b" + rank.getPureSuffix();
         info = info + "\n§fNametag color: §b" + rank.getNameColor().name() + "\n§fTeam: §b" + rank.getTeam().getName();
-
         for (Map.Entry<String, Boolean> set : rank.getPermissions().entrySet()) {
           info = info + "\n§f - " + set.getKey() + ": §b" + set.getValue();
         }
@@ -171,7 +170,6 @@ public class RankCommand implements CommandExecutor, TabCompleter {
         rankManager.remove(rank);
         userManager.updateMany(rank);
         userManager.updateHiddenView();
-        userDatabase.updateMany(rank);
         sender.sendMessage("§fRemoved rank §b" + rank.getName() + "§f.");
         return true;
       case "reload":
