@@ -54,8 +54,7 @@ public class UserDatabase {
             ResultSet rs = preparedStatement.executeQuery();
             Rank rank = rankManager.get(rs.getString(1));
             if (rank == null) rank = rankManager.getPrimaryRank();
-            User user = new User(uuid, rank, rs.getString(2));
-            return user;
+            return new User(uuid, rank, rs.getString(2));
         } catch (SQLException exception) {
             exception.printStackTrace();
             return null;
@@ -66,8 +65,7 @@ public class UserDatabase {
             try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT rank, punishments FROM users WHERE uuid = ?")) {
                 preparedStatement.setString(1, uuid.toString());
                 ResultSet rs = preparedStatement.executeQuery();
-                User user = new User(uuid, rankManager.get(rs.getString(1)), rs.getString(2));
-                return user;
+                return new User(uuid, rankManager.get(rs.getString(1)), rs.getString(2));
             } catch (SQLException exception) {
                 exception.printStackTrace();
                 return null;
